@@ -1,8 +1,9 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth, { AuthError, CredentialsSignin } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import prisma from "./bd";
+import { credentialSignIn } from "./actions/user";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -44,5 +45,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   pages: {
     signIn: "/signin",
+  },
+  callbacks: {
+    signIn: async ({ user, account }) => {
+      if (account?.provider === "google") {
+        try {
+          const email = user.email as string;
+          const name = user.name as string;
+          const image = user.image as string;
+          const findUser = await prisma.user.findFirst({
+            where: {
+              email: email,
+            },
+          });
+          if (!findUser) {
+            let username = name?.split(" ").join("").toLowerCase();
+            username += Date.now();
+
+            const password = username;
+            const hashedPassword = await hash(password, 10);
+            await prisma.user.create({
+              data: {
+                email: email,
+                username: username,
+                password: hashedPassword,
+                photoURL: image,
+              },
+            });
+
+            return true;
+          } else {
+            return true;
+          }
+        } catch (error) {
+          throw new AuthError(error.message);
+        }
+      } else {
+        return false;
+      }
+    },
   },
 });

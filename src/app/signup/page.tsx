@@ -3,8 +3,14 @@ import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import React from "react";
 import { SignUpForm } from "@/components/client/SignUpForm";
+import { auth, signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const user = await auth();
+  if (user) {
+    redirect("/");
+  }
   return (
     <div className="h-screen flex justify-center items-center">
       <div className=" shadow-2xl w-[400px] min-h-[600px] p-10 flex justify-center items-center flex-col relative gap-3 rounded-md">
@@ -13,7 +19,14 @@ export default function Page() {
         </h1>
         <SignUpForm />
 
-        <form action="" className="w-full">
+        <form
+          className="w-full"
+          action={async () => {
+            "use server";
+
+            await signIn("google");
+          }}
+        >
           <Button color="success" className="w-[95%]">
             <FcGoogle className="mr-5" size={20} />
             Continue With Google
