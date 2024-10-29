@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import prisma from "@/bd";
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
@@ -51,4 +51,8 @@ export const credentialSignIn = async (email: string, password: string) => {
     const err = error as CredentialsSignin;
     return err.cause;
   }
+};
+
+export const signOutFunction = async () => {
+  await signOut();
 };

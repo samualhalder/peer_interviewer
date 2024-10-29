@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { FcGoogle } from "react-icons/fc";
 import { SignUpForm } from "@/components/client/SignUpForm";
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
