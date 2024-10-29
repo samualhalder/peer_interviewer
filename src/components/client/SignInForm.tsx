@@ -24,16 +24,16 @@ export function SignInForm() {
             return;
           }
           const err = await credentialSignIn(email, password);
-          if (err) {
+          if (!err) {
+            toast({
+              description: "Signin Success",
+            });
+            router.refresh();
+          } else {
             toast({
               variant: "destructive",
               description: String(err),
             });
-          } else {
-            toast({
-              description: "Signin Success",
-            });
-            router.push("/");
           }
         }}
       >

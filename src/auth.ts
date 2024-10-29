@@ -80,7 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new AuthError(error.message);
         }
       } else {
-        return false;
+        return true;
       }
     },
   },

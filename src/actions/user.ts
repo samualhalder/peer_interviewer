@@ -46,7 +46,10 @@ export const register = async (fromData: FormData) => {
 
 export const credentialSignIn = async (email: string, password: string) => {
   try {
-    await signIn("credentials", { email, password });
+    await signIn("credentials", {
+      email,
+      password,
+    });
   } catch (error) {
     const err = error as CredentialsSignin;
     return err.cause;

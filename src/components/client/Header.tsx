@@ -22,7 +22,7 @@ export default function Header() {
       <div className=" fixed top-0 h-[60px] bg-[#2E82D6] w-full flex items-center px-5 gap-5">
         {/* Logo Section */}
         <div>
-          <h1 className="hidden text-white text-2xl tracking-widest text-bold font-mono">
+          <h1 className="hidden sm:block text-white text-2xl tracking-widest text-bold font-mono">
             PeerInterviewer
           </h1>
         </div>
@@ -41,7 +41,7 @@ export default function Header() {
         <div className=" flex-grow flex justify-end">
           <div className="w-[40%] flex gap-5">
             {showMenu && (
-              <div className=" opacity-80 delay-150 absolute top-[62px] right-2 bg-[#2E82D6] text-white p-4 h-[170px] w-[200px] rounded-l-lg rounded-br-lg">
+              <div className=" opacity-80 delay-150 absolute top-[66px] right-2 bg-[#2E82D6] text-white p-4 h-[170px] w-[200px] rounded-l-lg rounded-br-lg">
                 <div>
                   <p className="p-2 m-1 hover:bg-blue-400 rounded-lg flex items-center gap-3 cursor-pointer">
                     <CiUser />
@@ -55,7 +55,7 @@ export default function Header() {
                   <form
                     className="p-2 m-1 hover:bg-blue-400 rounded-lg flex items-center gap-3"
                     action={async () => {
-                      signOutFunction();
+                      await signOutFunction();
                       toast({
                         description: "Sign out successfull",
                       });
