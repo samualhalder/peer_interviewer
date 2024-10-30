@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import Header from "@/components/client/Header";
 import { auth } from "@/auth";
+import { getUserData } from "@/actions/user";
+import { FrontEndUser } from "@/types/type";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,14 +29,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const userSession = await auth();
-  console.log(userSession);
+  let user = null;
+  if (userSession) {
+    user = (await getUserData(
+      String(userSession?.user?.email)
+    )) as FrontEndUser;
+  }
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
+        <Header user={user} />
         <div className="mt-[60px]">{children}</div>
         <Toaster />
       </body>

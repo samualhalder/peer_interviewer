@@ -2,6 +2,7 @@
 
 import { signIn, signOut } from "@/auth";
 import prisma from "@/bd";
+import { UserType } from "@/types/type";
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 
@@ -59,3 +60,18 @@ export const credentialSignIn = async (email: string, password: string) => {
 export const signOutFunction = async () => {
   await signOut();
 };
+
+export async function getUserData(email: string) {
+  try {
+    const user = (await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    })) as UserType;
+    const { password, ...rest } = user;
+
+    return rest;
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -12,9 +12,11 @@ import { Separator } from "@/components/ui/separator";
 
 import { signOutFunction } from "@/actions/user";
 import { toast } from "@/hooks/use-toast";
+import { FrontEndUser } from "@/types/type";
 
-export default function Header() {
+export default function Header({ user }: { user: FrontEndUser | null }) {
   const pathname = usePathname();
+
   const [showMenu, setShowMenu] = useState(false);
 
   return (
@@ -71,10 +73,18 @@ export default function Header() {
             <Button>
               <CiSearch />
             </Button>
-            <Avatar onClick={() => setShowMenu((pre) => !pre)}>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            {user ? (
+              <Avatar onClick={() => setShowMenu((pre) => !pre)}>
+                <AvatarImage src={`${user?.photoURL}`} />
+                <AvatarFallback>
+                  {user.username[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <Link href={"/signin"}>
+                <Button>SignIn</Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
