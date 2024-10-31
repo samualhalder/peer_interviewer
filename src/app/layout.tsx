@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "@/components/ui/toaster";
+import "@uploadthing/react/styles.css";
 import "./globals.css";
 import Header from "@/components/client/Header";
 import { auth } from "@/auth";

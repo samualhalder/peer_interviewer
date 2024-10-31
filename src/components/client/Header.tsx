@@ -45,10 +45,13 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
             {showMenu && (
               <div className=" opacity-80 delay-150 absolute top-[66px] right-2 bg-[#2E82D6] text-white p-4 h-[170px] w-[200px] rounded-l-lg rounded-br-lg">
                 <div>
-                  <p className="p-2 m-1 hover:bg-blue-400 rounded-lg flex items-center gap-3 cursor-pointer">
+                  <Link
+                    href={"/profile"}
+                    className="p-2 m-1 hover:bg-blue-400 rounded-lg flex items-center gap-3 cursor-pointer"
+                  >
                     <CiUser />
                     Profile
-                  </p>
+                  </Link>
                   <p className="p-2 m-1 hover:bg-blue-400 rounded-lg flex items-center gap-3 cursor-pointer">
                     <RxDashboard />
                     Dasboard
@@ -70,7 +73,7 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
               </div>
             )}
             <Input placeholder="Serch for peer" className=" hidden sm:block" />
-            <Button>
+            <Button variant={"outline"}>
               <CiSearch />
             </Button>
             {user ? (

@@ -75,3 +75,16 @@ export async function getUserData(email: string) {
     console.log(error);
   }
 }
+
+export async function imageUploadDB(url: string, email: string) {
+  try {
+    await prisma.user.update({
+      where: { email: email },
+      data: {
+        photoURL: url,
+      },
+    });
+  } catch (error) {
+    throw new Error(error?.message);
+  }
+}

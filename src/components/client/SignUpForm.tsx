@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { register } from "@/actions/user";
 import { useRouter } from "next/navigation";
 
-import { NextResponse } from "next/server";
+
 
 export function SignUpForm() {
   const router = useRouter();
