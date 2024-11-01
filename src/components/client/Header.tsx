@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CiSearch, CiUser } from "react-icons/ci";
 import { RxDashboard } from "react-icons/rx";
 import { GoSignOut } from "react-icons/go";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -15,8 +15,24 @@ import { FrontEndUser } from "@/types/type";
 
 export default function Header({ user }: { user: FrontEndUser | null }) {
   const pathname = usePathname();
-
+  const dropDownRef = useRef(null);
   const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropDownRef.current &&
+        !dropDownRef.current.contains(event.target as Node)
+      ) {
+        setShowMenu(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -42,7 +58,10 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
         <div className=" flex-grow flex justify-end">
           <div className="w-[40%] flex gap-5">
             {showMenu && (
-              <div className=" opacity-80 delay-150 absolute top-[66px] right-2 bg-[#2E82D6] text-white p-4 h-[170px] w-[200px] rounded-l-lg rounded-br-lg">
+              <div
+                ref={dropDownRef}
+                className=" opacity-80 delay-150 transition-all absolute top-[66px] right-2 bg-[#2E82D6] text-white p-4 h-[170px] w-[200px] rounded-l-lg rounded-br-lg"
+              >
                 <div>
                   <Link
                     href={"/profile"}
@@ -82,6 +101,8 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
                   {user.firstName[0].toLocaleUpperCase()}
                   {user.lastName[0].toLocaleUpperCase()}
                 </AvatarFallback>
+
+                {/* The div that shows on hover */}
               </Avatar>
             ) : (
               <Link href={"/signin"}>

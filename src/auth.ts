@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         });
         if (!user) {
-          throw new CredentialsSignin({ cause: "Wrong Credentials." });
+          throw new CredentialsSignin({ cause: "No such user." });
         }
         const passwordMatched = await compare(password, user.password);
         if (!passwordMatched) {
