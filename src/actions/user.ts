@@ -8,10 +8,11 @@ import { CredentialsSignin } from "next-auth";
 
 export const register = async (fromData: FormData) => {
   const email = fromData.get("email") as string;
-  const username = fromData.get("username") as string;
+  const firstName = fromData.get("firstName") as string;
+  const lastName = fromData.get("lastName") as string;
   const password = fromData.get("password") as string;
-  console.log(email, password, username);
-  if (!email || !username || !password) {
+
+  if (!email || !firstName || !lastName || !password) {
     throw new Error("fill all the fields");
   }
 
@@ -24,20 +25,14 @@ export const register = async (fromData: FormData) => {
     if (userEmail) {
       throw new Error("User already exists.");
     }
-    const usernameUser = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    if (usernameUser) {
-      throw new Error("username already exists,try different username.");
-    }
+
     const hashedPassword = await hash(password, 10);
     await prisma.user.create({
       data: {
-        email: email,
-        username: username,
         password: hashedPassword,
+        email: email,
+        lastName: lastName,
+        firstName: firstName,
       },
     });
   } catch (error) {
@@ -86,5 +81,34 @@ export async function imageUploadDB(url: string, email: string) {
     });
   } catch (error) {
     throw new Error(error?.message);
+  }
+}
+
+export async function updateUser(formData: FormData, email: string) {
+  const firstName = formData.get("firstName") as string | undefined;
+  const lastName = formData.get("lastName") as string | undefined;
+  const password = formData.get("password") as string | undefined;
+  if (!email && !firstName && !lastName && !firstName) {
+    throw new Error("Atlest update one field.");
+  }
+  console.log(firstName, lastName, email, password);
+  let hashedPassword;
+  if (password) {
+    hashedPassword = await hash(password, 10);
+  }
+
+  try {
+    await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        ...(firstName != "" && { firstName: firstName }),
+        ...(lastName != "" && { lastName: lastName }),
+        ...(password != "" && { password: hashedPassword }),
+      },
+    });
+  } catch (error) {
+    throw new Error("some thing went wrong");
   }
 }

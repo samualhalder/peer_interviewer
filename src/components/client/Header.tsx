@@ -9,7 +9,6 @@ import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "@/components/ui/separator";
-
 import { signOutFunction } from "@/actions/user";
 import { toast } from "@/hooks/use-toast";
 import { FrontEndUser } from "@/types/type";
@@ -80,7 +79,8 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
               <Avatar onClick={() => setShowMenu((pre) => !pre)}>
                 <AvatarImage src={`${user?.photoURL}`} />
                 <AvatarFallback>
-                  {user.username[0].toUpperCase()}
+                  {user.firstName[0].toLocaleUpperCase()}
+                  {user.lastName[0].toLocaleUpperCase()}
                 </AvatarFallback>
               </Avatar>
             ) : (

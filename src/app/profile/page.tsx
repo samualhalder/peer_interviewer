@@ -1,6 +1,6 @@
 import { getUserData } from "@/actions/user";
 import { auth } from "@/auth";
-import { LeftProfile } from "@/components/client/LeftProfile";
+import { LeftProfile } from "@/components/server/LeftProfile";
 import { FrontEndUser } from "@/types/type";
 import { redirect } from "next/navigation";
 import React from "react";

@@ -58,15 +58,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           });
           if (!findUser) {
-            let username = name?.split(" ").join("").toLowerCase();
-            username += Date.now();
+            const firstName = name.split(" ")[0];
+            const lastName = name.split(" ")[1];
 
-            const password = username;
+            const passwordArray =
+              "abc@defghijklm$%nopqrstuvwxy@#zABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            let password = "";
+            for (let i = 0; i < 8; i++) {
+              const ind = Math.round(Math.random() * passwordArray.length - 1);
+              password += passwordArray[ind];
+            }
+            console.log(password);
+
             const hashedPassword = await hash(password, 10);
             await prisma.user.create({
               data: {
                 email: email,
-                username: username,
+                firstName: firstName,
+                lastName: lastName,
                 password: hashedPassword,
                 photoURL: image,
               },

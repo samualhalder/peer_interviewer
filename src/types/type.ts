@@ -1,11 +1,13 @@
 export type FrontEndUser = {
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   photoURL: string;
 };
 export type UserType = {
   id: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   photoURL: string;
   password: string;

@@ -7,8 +7,6 @@ import { Button } from "../ui/button";
 import { register } from "@/actions/user";
 import { useRouter } from "next/navigation";
 
-
-
 export function SignUpForm() {
   const router = useRouter();
   return (
@@ -16,10 +14,11 @@ export function SignUpForm() {
       <form
         className="w-full flex  flex-col gap-5"
         action={async (fromData: FormData) => {
-          const username = fromData.get("username");
+          const firstName = fromData.get("firstName");
+          const lastName = fromData.get("lastName");
           const email = fromData.get("email");
           const password = fromData.get("password");
-          if (!email || !username || !password) {
+          if (!email || !firstName || !lastName || !password) {
             toast({
               variant: "destructive",
               description: "Enter all the fields.",
@@ -41,6 +40,30 @@ export function SignUpForm() {
         }}
       >
         <div>
+          <Label htmlFor="firstName" className="text-gray-500 mb-3">
+            Your First Name
+          </Label>
+
+          <Input
+            className="w-[95%]"
+            type="text"
+            name="firstName"
+            autoComplete="current-email"
+          />
+        </div>
+        <div>
+          <Label htmlFor="lastName" className="text-gray-500 mb-3">
+            Your Last Name
+          </Label>
+
+          <Input
+            className="w-[95%]"
+            type="text"
+            name="lastName"
+            autoComplete="current-email"
+          />
+        </div>
+        <div>
           <Label htmlFor="email" className="text-gray-500 mb-3">
             Your email address
           </Label>
@@ -49,19 +72,6 @@ export function SignUpForm() {
             className="w-[95%]"
             type="Email"
             name="email"
-            autoComplete="current-email"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="username" className="text-gray-500 mb-3">
-            Your username
-          </Label>
-
-          <Input
-            className="w-[95%]"
-            type="text"
-            name="username"
             autoComplete="current-email"
           />
         </div>
