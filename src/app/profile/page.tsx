@@ -1,5 +1,6 @@
 import { getUserData } from "@/actions/user";
 import { auth } from "@/auth";
+import RightProfile from "@/components/client/RightProfile";
 import { LeftProfile } from "@/components/server/LeftProfile";
 import { FrontEndUser } from "@/types/type";
 import { redirect } from "next/navigation";
@@ -15,8 +16,9 @@ export default async function Page() {
   )) as FrontEndUser;
 
   return (
-    <>
+    <div className="flex flex-col md:flex-row">
       <LeftProfile user={user} />
-    </>
+      <RightProfile />
+    </div>
   );
 }
