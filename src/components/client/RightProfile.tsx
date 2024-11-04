@@ -11,19 +11,21 @@ export default function RightProfile() {
   const [searchParams, setSearchParams] = useState("");
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [selectedTechsSet, setSelectedTechsSet] = useState(new Set());
+  const [activeRow, setActiveRow] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const ulRef = useRef(null);
+
   useEffect(() => {
     const fetchTechs = () => {
       if (searchParams.trim() === "") {
         setResultTechs([]);
         return;
       }
-      ulRef.current.focus();
+
       const result: string[] = technologies.filter((s: string) =>
         s.startsWith(searchParams.trim())
       );
-      setResultTechs(result);
+      const array = result.filter((elm) => !selectedTechsSet.has(elm));
+      setResultTechs(array);
     };
     fetchTechs();
   }, [searchParams]);
@@ -32,6 +34,7 @@ export default function RightProfile() {
     const removedArray = selectedTechs.filter((result) => result !== tech);
     setSelectedTechs([...removedArray]);
     setSelectedTechsSet(new Set([...removedArray]));
+    setActiveRow(0);
   };
 
   const handleAddTechs = (tech: string) => {
@@ -48,6 +51,12 @@ export default function RightProfile() {
     ) {
       const tech = selectedTechs[selectedTechs.length - 1];
       handleRemove(tech);
+    } else if (e.key === "ArrowDown" && resultTechs.length > 0) {
+      setActiveRow((pre) => (pre < resultTechs.length - 1 ? pre + 1 : 0));
+    } else if (e.key === "ArrowUp" && resultTechs.length > 0) {
+      setActiveRow((pre) => (pre > 0 ? pre - 1 : resultTechs.length - 1));
+    } else if (e.key === "Enter" && activeRow >= 0 && resultTechs.length > 0) {
+      handleAddTechs(resultTechs[activeRow]);
     }
   };
   return (
@@ -66,7 +75,7 @@ export default function RightProfile() {
             {selectedTechs.map((techs, ind) => (
               <div
                 key={ind}
-                className="p-2 m-2 border-2 border-[#2E82D6] rounded-md flex items-center justify-between"
+                className="p-2 m-2  bg-[#2E82D6] text-white rounded-md flex items-center justify-between"
               >
                 <p>{techs}</p>
                 <div onClick={() => handleRemove(techs)}>
@@ -85,26 +94,26 @@ export default function RightProfile() {
               ></input>
               {resultTechs && (
                 <ul
-                  ref={ulRef}
+                  tabIndex={activeRow}
                   className={` absolute top-[50px]  ${
                     resultTechs.length === 0 ? "hidden" : ""
                   } max-h-[200px] w-[300px] overflow-y-scroll m-5 border-2 border-[#2E82D6] p-2 rounded-lg`}
                 >
                   {resultTechs.map((result, ind) => {
-                    return !selectedTechsSet.has(result) ? (
+                    return (
                       <li
                         key={ind}
                         onClick={() => handleAddTechs(result)}
-                        className={`active p-1 m-1 ${
+                        className={` p-1 m-1 ${
                           resultTechs.length !== ind + 1
                             ? "border-b-[1px] border-gray-400"
                             : ""
-                        } hover:bg-gray-300`}
+                        } hover:bg-gray-300 ${
+                          activeRow === ind ? " bg-gray-300" : ""
+                        }`}
                       >
                         {result}
                       </li>
-                    ) : (
-                      <></>
                     );
                   })}
                 </ul>

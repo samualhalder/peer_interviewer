@@ -52,6 +52,7 @@ export const technologies: string[] = [
   "python",
   "raspberry pi",
   "react",
+  "redis",
   "redux",
   "ruby",
   "rust",
