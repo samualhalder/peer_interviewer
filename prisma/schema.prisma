@@ -25,7 +25,8 @@ model UserProfile {
     id           String  @id() @default(uuid())
     user         User    @relation(fields: [userId], references: [id])
     userId       String  @unique
-    teckStack    String  @default("[]")
+    about        String?
+    techStack    String  @default("[]")
     organization String?
     experience   Float?
     linkedin     String

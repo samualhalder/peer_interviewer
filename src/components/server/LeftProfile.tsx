@@ -7,7 +7,7 @@ import UpdateUserFrom from "../client/UpdateUserFrom";
 
 export function LeftProfile({ user }: { user: FrontEndUser }) {
   return (
-    <div className="w-full md:min-w-[30%] min-h-screen border-2 border-[#2E82D6] p-5 flex flex-col items-center gap-3">
+    <div className="w-full md:min-w-[30%] min-h-screen border-r-2 border-[#2E82D6] p-5 flex flex-col items-center gap-3">
       <div className="w-[300px] h-[300px]  rounded-full overflow-hidden border-2 border-blue-300 ">
         <Image
           src={user.photoURL}

@@ -1,17 +1,27 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { technologies } from "../../lib/techStack";
 import { Textarea } from "../ui/textarea";
 import { IoMdClose } from "react-icons/io";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { toast } from "@/hooks/use-toast";
 
-export default function RightProfile() {
+export default function RightProfile({ email }: { email: string }) {
   const [resultTechs, setResultTechs] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useState("");
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [selectedTechsSet, setSelectedTechsSet] = useState(new Set());
   const [activeRow, setActiveRow] = useState(0);
+  const [formData, setFormData] = useState({});
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -56,17 +66,79 @@ export default function RightProfile() {
     } else if (e.key === "ArrowUp" && resultTechs.length > 0) {
       setActiveRow((pre) => (pre > 0 ? pre - 1 : resultTechs.length - 1));
     } else if (e.key === "Enter" && activeRow >= 0 && resultTechs.length > 0) {
+      e.preventDefault();
       handleAddTechs(resultTechs[activeRow]);
     }
   };
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  console.log(formData);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const submitFuntion = async () => {
+        const response = await fetch("/api/v1/user/user-profile-set", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            email,
+            techStack: JSON.stringify(selectedTechs),
+          }),
+        });
+
+        const message = await response.text();
+
+        toast({
+          description: message,
+        });
+      };
+      submitFuntion();
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        variant: "destructive",
+        description: "some thing went wrong",
+      });
+    }
+  };
   return (
-    <div className="w-full md:min-w-[65%] flex flex-col p-2 gap-2">
+    <div className="w-full md:min-w-[65%] flex flex-col p-2 gap-4">
       <h1 className="mx-auto text-5xl ">Public profile</h1>
       <Separator />
-      <div className="md:m-[30px]">
+      <form className="md:m-[30px]" onSubmit={(e) => handleSubmit(e)}>
         <div>
           <Label htmlFor="about">Write about your self</Label>
-          <Textarea cols={12} />
+          <Textarea cols={12} name="about" onChange={(e) => handleChange(e)} />
+        </div>
+
+        <div>
+          <Label className="mb-2">Organization</Label>
+          <Input name="organization" onChange={(e) => handleChange(e)} />
+        </div>
+        <div>
+          <Label className="mb-2">Exerience</Label>
+          <Input name="experience" onChange={(e) => handleChange(e)} />
+        </div>
+        <div>
+          <Label className="mb-2">LinkedIn Porfile Link*</Label>
+          <Input name="linkedin" onChange={(e) => handleChange(e)} />
+        </div>
+        <div>
+          <Label className="mb-2">Portfolio Link</Label>
+          <Input name="portfolio" onChange={(e) => handleChange(e)} />
+        </div>
+        <div>
+          <Label className="mb-2">Resume Link*</Label>
+          <Input name="resume" onChange={(e) => handleChange(e)} />
         </div>
         {/* TechStack Setion */}
         <Label htmlFor="teckStack">Tech Stack</Label>
@@ -95,7 +167,7 @@ export default function RightProfile() {
               {resultTechs && (
                 <ul
                   tabIndex={activeRow}
-                  className={` absolute top-[50px]  ${
+                  className={`z-10 text-white absolute bg-[#2E82D6] top-[50px]  ${
                     resultTechs.length === 0 ? "hidden" : ""
                   } max-h-[200px] w-[300px] overflow-y-scroll m-5 border-2 border-[#2E82D6] p-2 rounded-lg`}
                 >
@@ -108,8 +180,8 @@ export default function RightProfile() {
                           resultTechs.length !== ind + 1
                             ? "border-b-[1px] border-gray-400"
                             : ""
-                        } hover:bg-gray-300 ${
-                          activeRow === ind ? " bg-gray-300" : ""
+                        } hover:bg-blue-400 ${
+                          activeRow === ind ? " bg-blue-400" : ""
                         }`}
                       >
                         {result}
@@ -121,7 +193,14 @@ export default function RightProfile() {
             </div>
           </div>
         </div>
-      </div>
+        <div className="m-5">
+          <p>* fields must have to filed </p>
+        </div>
+        <Button className="" type="submit">
+          Save
+        </Button>
+      </form>
+      <Separator />
     </div>
   );
 }
