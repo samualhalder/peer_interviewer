@@ -1,10 +1,11 @@
 import { getUserData } from "@/actions/user";
 import { auth } from "@/auth";
+import Loader from "@/components/client/Loader";
 import RightProfile from "@/components/client/RightProfile";
 import { LeftProfile } from "@/components/server/LeftProfile";
 import { FrontEndUser } from "@/types/type";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default async function Page() {
   const userSession = await auth();
@@ -18,7 +19,9 @@ export default async function Page() {
   return (
     <div className="flex flex-col md:flex-row">
       <LeftProfile user={user} />
-      <RightProfile email={user.email} />
+      <Suspense fallback={<Loader />}>
+        <RightProfile email={user.email} />
+      </Suspense>
     </div>
   );
 }

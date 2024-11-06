@@ -76,7 +76,6 @@ export default function RightProfile({ email }: { email: string }) {
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  console.log(formData);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,14 +101,39 @@ export default function RightProfile({ email }: { email: string }) {
       };
       submitFuntion();
     } catch (error) {
-      console.log(error);
-
       toast({
         variant: "destructive",
         description: "some thing went wrong",
       });
     }
   };
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch(`/api/v1/user/get-user-profile/${email}`);
+        const data = await response.json();
+        setFormData({
+          about: data?.about,
+          linkedin: data?.linkedin,
+          experience: data?.experience,
+          portfolio: data?.portfolio,
+          resume: data?.resumeLink,
+          organization: data?.organization,
+        });
+        const techStack = JSON.parse(data.techStack);
+        console.log(techStack);
+
+        setSelectedTechs([...JSON.parse(data.techStack)]);
+        setSelectedTechsSet(new Set([...JSON.parse(data.techStack)]));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUserDetails();
+  }, [email]);
+  console.log(formData);
+
   return (
     <div className="w-full md:min-w-[65%] flex flex-col p-2 gap-4">
       <h1 className="mx-auto text-5xl ">Public profile</h1>
@@ -117,28 +141,53 @@ export default function RightProfile({ email }: { email: string }) {
       <form className="md:m-[30px]" onSubmit={(e) => handleSubmit(e)}>
         <div>
           <Label htmlFor="about">Write about your self</Label>
-          <Textarea cols={12} name="about" onChange={(e) => handleChange(e)} />
+          <Textarea
+            value={formData?.about}
+            cols={12}
+            name="about"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
 
         <div>
           <Label className="mb-2">Organization</Label>
-          <Input name="organization" onChange={(e) => handleChange(e)} />
+          <Input
+            value={formData?.organization}
+            name="organization"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         <div>
           <Label className="mb-2">Exerience</Label>
-          <Input name="experience" onChange={(e) => handleChange(e)} />
+          <Input
+            value={formData?.experience}
+            name="experience"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         <div>
           <Label className="mb-2">LinkedIn Porfile Link*</Label>
-          <Input name="linkedin" onChange={(e) => handleChange(e)} />
+          <Input
+            value={formData?.linkedin}
+            name="linkedin"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         <div>
           <Label className="mb-2">Portfolio Link</Label>
-          <Input name="portfolio" onChange={(e) => handleChange(e)} />
+          <Input
+            value={formData?.portfolio}
+            name="portfolio"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         <div>
           <Label className="mb-2">Resume Link*</Label>
-          <Input name="resume" onChange={(e) => handleChange(e)} />
+          <Input
+            value={formData?.resume}
+            name="resume"
+            onChange={(e) => handleChange(e)}
+          />
         </div>
         {/* TechStack Setion */}
         <Label htmlFor="teckStack">Tech Stack</Label>
