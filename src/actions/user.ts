@@ -112,3 +112,37 @@ export async function updateUser(formData: FormData, email: string) {
     throw new Error("some thing went wrong");
   }
 }
+
+export async function getSearchUsers(slag: string) {
+  console.log(slag);
+
+  try {
+    const resultUser = await prisma.userProfile.findMany({
+      where: {
+        OR: [
+          {
+            about: {
+              contains: slag,
+            },
+          },
+          {
+            techStack: {
+              contains: slag,
+            },
+          },
+          {
+            organization: {
+              contains: slag,
+            },
+          },
+        ],
+      },
+      include: {
+        user: {},
+      },
+    });
+    return resultUser;
+  } catch (error) {
+    throw new Error("Some thing went wrong");
+  }
+}

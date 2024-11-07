@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CiSearch, CiUser } from "react-icons/ci";
 import { RxDashboard } from "react-icons/rx";
@@ -9,13 +9,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "@/components/ui/separator";
-import { signOutFunction } from "@/actions/user";
+
 import { toast } from "@/hooks/use-toast";
 import { FrontEndUser } from "@/types/type";
+
+import { signOutFunction } from "@/actions/user";
 
 export default function Header({ user }: { user: FrontEndUser | null }) {
   const pathname = usePathname();
   const dropDownRef = useRef(null);
+  const navigator = useRouter();
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
@@ -90,10 +93,23 @@ export default function Header({ user }: { user: FrontEndUser | null }) {
                 </div>
               </div>
             )}
-            <Input placeholder="Serch for peer" className=" hidden sm:block" />
-            <Button variant={"outline"}>
-              <CiSearch />
-            </Button>
+            <form
+              className="flex gap-2"
+              action={(formData: FormData) => {
+                const s = formData.get("slug") as string;
+                const slug = s.trim().split(" ").join("-");
+                navigator.push(`/searchresults/${slug}`);
+              }}
+            >
+              <Input
+                name="slug"
+                placeholder="Serch for peer"
+                className=" hidden sm:block"
+              />
+              <Button variant={"outline"}>
+                <CiSearch />
+              </Button>
+            </form>
             {user ? (
               <Avatar onClick={() => setShowMenu((pre) => !pre)}>
                 <AvatarImage src={`${user?.photoURL}`} />

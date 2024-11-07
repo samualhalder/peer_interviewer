@@ -1,7 +1,12 @@
+import { auth } from "@/auth";
 import prisma from "@/bd";
 import { UserType } from "@/types/type";
 
 export async function POST(req: Request) {
+  const userSession = await auth();
+  if (!userSession) {
+    return new Response("unauthorized", { status: 401 });
+  }
   try {
     const body = await req.json();
     console.log(body);

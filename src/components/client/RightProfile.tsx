@@ -77,10 +77,35 @@ export default function RightProfile({ email }: { email: string }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validLinkedIn = (url: string): boolean => {
+    const linkedInRegex =
+      /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company|school)\/[a-zA-Z0-9-_%]+\/?$/;
+    return linkedInRegex.test(url);
+  };
+  const isValidGoogleDriveUrl = (url: string): boolean => {
+    const googleDriveRegex =
+      /^https:\/\/(drive|docs)\.google\.com\/(file\/d\/|drive\/folders\/|document\/d\/|spreadsheets\/d\/|presentation\/d\/|forms\/d\/)([a-zA-Z0-9_-]{33,})\/?.*$/;
+    return googleDriveRegex.test(url);
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const submitFuntion = async () => {
+        if (!formData.linkedin || !validLinkedIn(formData.linkedin)) {
+          toast({
+            variant: "destructive",
+            description: "Enter a valid linked in profile",
+          });
+          return;
+        }
+        if (!formData.resume || !isValidGoogleDriveUrl(formData.resume)) {
+          toast({
+            variant: "destructive",
+            description: "Enter a valid google drive link",
+          });
+          return;
+        }
         const response = await fetch("/api/v1/user/user-profile-set", {
           method: "POST",
           headers: {
@@ -121,8 +146,6 @@ export default function RightProfile({ email }: { email: string }) {
           resume: data?.resumeLink,
           organization: data?.organization,
         });
-        const techStack = JSON.parse(data.techStack);
-        console.log(techStack);
 
         setSelectedTechs([...JSON.parse(data.techStack)]);
         setSelectedTechsSet(new Set([...JSON.parse(data.techStack)]));
@@ -132,7 +155,6 @@ export default function RightProfile({ email }: { email: string }) {
     };
     fetchUserDetails();
   }, [email]);
-  console.log(formData);
 
   return (
     <div className="w-full md:min-w-[65%] flex flex-col p-2 gap-4">
@@ -158,7 +180,7 @@ export default function RightProfile({ email }: { email: string }) {
           />
         </div>
         <div>
-          <Label className="mb-2">Exerience</Label>
+          <Label className="mb-2">Years of experience</Label>
           <Input
             value={formData?.experience}
             name="experience"
@@ -182,7 +204,7 @@ export default function RightProfile({ email }: { email: string }) {
           />
         </div>
         <div>
-          <Label className="mb-2">Resume Link*</Label>
+          <Label className="mb-2">Resume Link (Google drive link)*</Label>
           <Input
             value={formData?.resume}
             name="resume"

@@ -18,7 +18,9 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col md:flex-row">
-      <LeftProfile user={user} />
+      <Suspense fallback={<Loader />}>
+        <LeftProfile user={user} />
+      </Suspense>
       <Suspense fallback={<Loader />}>
         <RightProfile email={user.email} />
       </Suspense>
