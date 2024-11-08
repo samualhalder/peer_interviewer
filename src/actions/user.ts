@@ -113,34 +113,45 @@ export async function updateUser(formData: FormData, email: string) {
   }
 }
 
-export async function getSearchUsers(slag: string) {
+export async function getSearchUsers(slag: string[]) {
   console.log(slag);
 
   try {
     const resultUser = await prisma.userProfile.findMany({
       where: {
-        OR: [
-          {
-            about: {
-              contains: slag,
+        OR: slag.map((word) => ({
+          OR: [
+            {
+              about: {
+                contains: word,
+              },
             },
-          },
-          {
-            techStack: {
-              contains: slag,
+            {
+              techStack: {
+                contains: word,
+              },
             },
-          },
-          {
-            organization: {
-              contains: slag,
+            {
+              organization: {
+                contains: word,
+              },
             },
-          },
-        ],
+          ],
+        })),
       },
-      include: {
-        user: {},
+      select: {
+        about: true,
+        organization: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            photoURL: true,
+          },
+        },
       },
     });
+
     return resultUser;
   } catch (error) {
     throw new Error("Some thing went wrong");
