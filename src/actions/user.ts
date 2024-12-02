@@ -71,6 +71,26 @@ export async function getUserData(email: string) {
   }
 }
 
+export const getUserById = async (id: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        photoURL: true,
+        userProfile: true,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export async function imageUploadDB(url: string, email: string) {
   try {
     await prisma.user.update({
@@ -114,8 +134,6 @@ export async function updateUser(formData: FormData, email: string) {
 }
 
 export async function getSearchUsers(slag: string[]) {
-  console.log(slag);
-
   try {
     const resultUser = await prisma.userProfile.findMany({
       where: {
@@ -144,6 +162,7 @@ export async function getSearchUsers(slag: string[]) {
         organization: true,
         user: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
             photoURL: true,

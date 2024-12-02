@@ -1,6 +1,8 @@
 import { getSearchUsers } from "@/actions/user";
+import { Button } from "@/components/ui/button";
 
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export default async function Page({
@@ -19,13 +21,13 @@ export default async function Page({
           results.map((result, ind) => (
             <div
               key={ind}
-              className="border-2 border-[#2E82D6] p-4 m-4 w-[350px] h-[400px] flex flex-col items-center cursor-pointer gap-5 rounded-md"
+              className="border-2 border-[#2E82D6] p-4 m-4 w-[350px] h-[420px] flex flex-col items-center cursor-pointer gap-5 rounded-md"
             >
-              <div className="h-[250px] w-[250px] rounded-full overflow-hidden ">
+              <div className="h-[200px] w-[200px] rounded-full  overflow-hidden ">
                 <Image
                   src={String(result?.user?.photoURL)}
-                  width={250}
-                  height={250}
+                  width={200}
+                  height={200}
                   alt="avatar"
                 />
               </div>
@@ -38,6 +40,9 @@ export default async function Page({
               <p className="w-full text-center">
                 {result.about?.slice(0, 42)}...
               </p>
+              <Link className="w-full" href={`/peer-profile/${result.user.id}`}>
+                <Button className="w-full">View profile</Button>
+              </Link>
             </div>
           ))}
       </div>
